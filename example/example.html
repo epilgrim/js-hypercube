@@ -31,28 +31,35 @@
 	<script src="../src/ps.FactIndex.js"></script>
 	<script src="../src/ps.Cell.js"></script>
 	<script src="../src/ps.Cube.js"></script>
-	<script src="../src/ps.Cube.transforms.js"></script>
+	<script src="Report.class.js"></script>
+	<script src="ReportsCollection.class.js"></script>
+	<script src="ReportsBuilder.class.js"></script>
+	<!--<script src="../src/ps.Cube.transforms.js"></script>-->
 	<!--<script src="../js-hypercube.min.js"></script>-->
-
-	<!-- Example data -->
-	<script src="example.data.js"></script>
 	<script>
-		// each fact record in the data-set has a unix-time. add standardized local-time facts
-		ps.Cube.transforms.dateLocal(window.example.data);
+        builder = new ReportsBuilder();
+        var reports_collection = builder.getReportsCollection();
 
-		// turn our fact records into a cube
-		var cube	= ps.Cube.deserialize(window.example.data, ['rentals', 'sales', 'revenue'])
+        //backguards compatibility
+        var reports = function(key) {
+            key = key || 'main';
+            return reports_collection.getReport(key).getData();
+        }
 
 		// run some interesting queries
-		console.info('Total Rentals', cube.sum().rentals);
-		console.info('Total Sales from Rentals', cube.sum().sales);
-		console.info('Total Revenue', '$' + cube.sum().revenue);
-		console.info('Revenue at 6pm', '$' + cube.slice({hour: 18}).sum(2).revenue);
-		console.info('Revenue at 6pm for Nintendo games', '$' + cube.slice({hour: 18, platform: 'Nintendo'}).sum(2).revenue);
-		console.info('Revenue at 6pm for Super Nintendo games', '$' + cube.slice({hour: 18, platform: 'Super Nintendo'}).sum(2).revenue);
-		console.info('Avg rentals per hour for games staring Mario', cube.slice({staring: 'Mario'}).avg(24, 2).rentals + ' units');
-		console.info('Avg rentals per hour for games staring Link', cube.slice({staring: 'Link'}).avg(24, 2).rentals + ' units');
-		console.info('Avg rentals per hour for games staring Samus', cube.slice({staring: 'Samus'}).avg(24, 2).rentals + ' units');
+        var key = 'by_country';
+		console.info('Total Visits', reports(key).sum().visits);
+		console.info('Total Signups', reports(key).sum().signups);
+		console.info('Countries', reports(key).getFactValues('country'));
+		console.info('Fact Names', reports(key).getFactNames());
+        console.info('Total Espana', reports(key).slice({country: 'es'}).sum());
+//		console.info('Total Revenue', '$' + cube.sum().revenue);
+//		console.info('Revenue at 6pm', '$' + cube.slice({hour: 18}).sum(2).revenue);
+//		console.info('Revenue at 6pm for Nintendo games', '$' + cube.slice({hour: 18, platform: 'Nintendo'}).sum(2).revenue);
+//		console.info('Revenue at 6pm for Super Nintendo games', '$' + cube.slice({hour: 18, platform: 'Super Nintendo'}).sum(2).revenue);
+//		console.info('Avg rentals per hour for games staring Mario', cube.slice({staring: 'Mario'}).avg(24, 2).rentals + ' units');
+//		console.info('Avg rentals per hour for games staring Link', cube.slice({staring: 'Link'}).avg(24, 2).rentals + ' units');
+//		console.info('Avg rentals per hour for games staring Samus', cube.slice({staring: 'Samus'}).avg(24, 2).rentals + ' units');
 	</script>
 </body>
 </html>
