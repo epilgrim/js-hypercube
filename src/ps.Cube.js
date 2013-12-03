@@ -78,7 +78,7 @@ ps.Cube.prototype.getFactNames = function() {
  * @param {string} factName
  * @return {Array.<string>}		Get a list of fact values from the cube
  */
-ps.Cube.prototype.getValues = function(factName) {
+ps.Cube.prototype.getFactValues = function(factName) {
 	var values 		= [];
 
 	for (var i = 0, il = this._cells.length; i < il; ++i) {
@@ -292,7 +292,7 @@ ps.Cube.prototype.avg = function(count, opt_precision) {
  * @return {Object.<string, number>}		An object, in descending order, where key is a factValue and value is a summed measure
  */
 ps.Cube.prototype.topSum = function(factName, measureName, opt_limit) {
-	var allValues		= this.getValues(factName),
+	var allValues		= this.getFactValues(factName),
 		workingValues	= [],
 		limit			= ps.isNumber(opt_limit) ? opt_limit : undefined;
 
