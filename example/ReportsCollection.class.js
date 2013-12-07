@@ -4,12 +4,10 @@ function ReportsCollection(reports) {
     this._reports = {};
     var self = this;
 
-    Object.keys(reports).forEach(function(key){
-        self._reports[reports[key].getKey()] = reports[key];
-    });
+    self._reports = reports;
 }
-ReportsCollection.prototype.addReport = function(report) {
-    return this._reports[report.getKey] = report;
+ReportsCollection.prototype.addReport = function(key, report) {
+    return this._reports[key] = report;
 };
 ReportsCollection.prototype.getReport = function(key) {
     return this._reports[key];

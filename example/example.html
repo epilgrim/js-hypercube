@@ -13,13 +13,14 @@
 	<header>
 
 	</header>
-	<div role="main">
-    <div id="log"></div>
-    <div id="table">
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>
-    </div>
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto; clear: both"></div>
-	</div>
+	<section>
+        <div id="log"></div>
+        <div id="table">
+            <table class="display" id="example"></table>
+        </div>
+        <div id="chart_multiple_series" style="min-width: 310px; height: 400px; margin: 0 auto; clear: both"></div>
+        <div id="multiple_charts"></div>
+	</section>
 	<footer>
 
 	</footer>
@@ -39,7 +40,6 @@
 	<script src="./ps.Cube.extension.js"></script>
 
     <!--Reports Classes-->
-	<script src="Report.class.js"></script>
 	<script src="ReportsCollection.class.js"></script>
 	<script src="ReportsBuilder.class.js"></script>
 	<!--<script src="../src/ps.Cube.transforms.js"></script>-->
@@ -56,22 +56,20 @@
         //backguards compatibility
         var reports = function(key) {
             key = key || 'main';
-            return reports_collection.getReport(key).getData();
-        }
+            return reports_collection.getReport(key);
+        };
         
         function print(title, content){
             $('#log').append('<p>'+ title + ':' +JSON.stringify(content)+'</p>');
 
-        }
+        };
 
         // run some interesting queries
         var key = 'main';
-		print('Total Visits', reports(key).slice({'country':'ar'}).extractMeasureValues('visits'));
-//		print('Total Signups', reports(key).sum().signups);
-//		print('Countries', reports(key).getFactValues('country'));
-//		print('Fact Names', reports(key).getFactNames());
-//        print('Total Espana', reports(key).slice({country: 'es'}).sum());
+		print('Total Visits', reports(key).getFactValues('date'));
 	</script>
+
+    <!--HIGHCHARTS INITIALIZATION-->
     <script>
         var _series = [];
         $(function () {
@@ -82,86 +80,52 @@
                 _series.push(temp);
             });
 
-            $('#container').highcharts({
+//            ONE WITH MULTIPLE SERIES
+            $('#chart_multiple_series').highcharts({
                 xAxis: {
                     categories: reports(key).getFactValues('date')
                 },
                 yAxis: {
                     title: {
-                        text: 'Temperature (°C)'
-                    },
+                        text: 'visits'
+                    }
                 },
                 series: _series
             });
+
+//            MULTIPLE CHARTS
+            reports(key).getFactValues('country').forEach(function(value){
+                var div = $('<div/>');
+                $(div).appendTo('#multiple_charts');
+
+                div.highcharts({
+                    xAxis: {
+                        categories: reports(key).getFactValues('date')
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'visits'
+                        }
+                    },
+                    series: [
+                        {
+                            name: value,
+                            data: reports(key).slice( { country: value }).extractMeasureValues('visits')
+                        }
+                    ]
+                });
+            });
+
         });
 
     </script>
 
+    <!--DATATABLES INITIALIZATION-->
     <script type="text/javascript" charset="utf-8">
-        /* Data set - can contain whatever information you want */
-        var aDataSet = [
-            ['Trident','Internet Explorer 4.0','Win 95+','4','X'],
-            ['Trident','Internet Explorer 5.0','Win 95+','5','C'],
-            ['Trident','Internet Explorer 5.5','Win 95+','5.5','A'],
-            ['Trident','Internet Explorer 6','Win 98+','6','A'],
-            ['Trident','Internet Explorer 7','Win XP SP2+','7','A'],
-            ['Trident','AOL browser (AOL desktop)','Win XP','6','A'],
-            ['Gecko','Firefox 1.0','Win 98+ / OSX.2+','1.7','A'],
-            ['Gecko','Firefox 1.5','Win 98+ / OSX.2+','1.8','A'],
-            ['Gecko','Firefox 2.0','Win 98+ / OSX.2+','1.8','A'],
-            ['Gecko','Firefox 3.0','Win 2k+ / OSX.3+','1.9','A'],
-            ['Gecko','Camino 1.0','OSX.2+','1.8','A'],
-            ['Gecko','Camino 1.5','OSX.3+','1.8','A'],
-            ['Gecko','Netscape 7.2','Win 95+ / Mac OS 8.6-9.2','1.7','A'],
-            ['Gecko','Netscape Browser 8','Win 98SE+','1.7','A'],
-            ['Gecko','Netscape Navigator 9','Win 98+ / OSX.2+','1.8','A'],
-            ['Gecko','Mozilla 1.0','Win 95+ / OSX.1+',1,'A'],
-            ['Gecko','Mozilla 1.1','Win 95+ / OSX.1+',1.1,'A'],
-            ['Gecko','Mozilla 1.2','Win 95+ / OSX.1+',1.2,'A'],
-            ['Gecko','Mozilla 1.3','Win 95+ / OSX.1+',1.3,'A'],
-            ['Gecko','Mozilla 1.4','Win 95+ / OSX.1+',1.4,'A'],
-            ['Gecko','Mozilla 1.5','Win 95+ / OSX.1+',1.5,'A'],
-            ['Gecko','Mozilla 1.6','Win 95+ / OSX.1+',1.6,'A'],
-            ['Gecko','Mozilla 1.7','Win 98+ / OSX.1+',1.7,'A'],
-            ['Gecko','Mozilla 1.8','Win 98+ / OSX.1+',1.8,'A'],
-            ['Gecko','Seamonkey 1.1','Win 98+ / OSX.2+','1.8','A'],
-            ['Gecko','Epiphany 2.20','Gnome','1.8','A'],
-            ['Webkit','Safari 1.2','OSX.3','125.5','A'],
-            ['Webkit','Safari 1.3','OSX.3','312.8','A'],
-            ['Webkit','Safari 2.0','OSX.4+','419.3','A'],
-            ['Webkit','Safari 3.0','OSX.4+','522.1','A'],
-            ['Webkit','OmniWeb 5.5','OSX.4+','420','A'],
-            ['Webkit','iPod Touch / iPhone','iPod','420.1','A'],
-            ['Webkit','S60','S60','413','A'],
-            ['Presto','Opera 7.0','Win 95+ / OSX.1+','-','A'],
-            ['Presto','Opera 7.5','Win 95+ / OSX.2+','-','A'],
-            ['Presto','Opera 8.0','Win 95+ / OSX.2+','-','A'],
-            ['Presto','Opera 8.5','Win 95+ / OSX.2+','-','A'],
-            ['Presto','Opera 9.0','Win 95+ / OSX.3+','-','A'],
-            ['Presto','Opera 9.2','Win 88+ / OSX.3+','-','A'],
-            ['Presto','Opera 9.5','Win 88+ / OSX.3+','-','A'],
-            ['Presto','Opera for Wii','Wii','-','A'],
-            ['Presto','Nokia N800','N800','-','A'],
-            ['Presto','Nintendo DS browser','Nintendo DS','8.5','C/A<sup>1</sup>'],
-            ['KHTML','Konqureror 3.1','KDE 3.1','3.1','C'],
-            ['KHTML','Konqureror 3.3','KDE 3.3','3.3','A'],
-            ['KHTML','Konqureror 3.5','KDE 3.5','3.5','A'],
-            ['Tasman','Internet Explorer 4.5','Mac OS 8-9','-','X'],
-            ['Tasman','Internet Explorer 5.1','Mac OS 7.6-9','1','C'],
-            ['Tasman','Internet Explorer 5.2','Mac OS 8-X','1','C'],
-            ['Misc','NetFront 3.1','Embedded devices','-','C'],
-            ['Misc','NetFront 3.4','Embedded devices','-','A'],
-            ['Misc','Dillo 0.8','Embedded devices','-','X'],
-            ['Misc','Links','Text only','-','X'],
-            ['Misc','Lynx','Text only','-','X'],
-            ['Misc','IE Mobile','Windows Mobile 6','-','C'],
-            ['Misc','PSP browser','PSP','-','C'],
-            ['Other browsers','All others','-','-','U']
-        ];
         $(document).ready(function() {
             $('#example').dataTable( {
-                "aaData": aDataSet,
-                "aoColumns": reports_collection.getReport('main').getDatatablesMetadata()
+                "aaData": reports_collection.getReport(key).exportDataToTable(),
+                "aoColumns": reports_collection.getReport(key).exportHeadersToDataTables()
             } );
         } );
     </script>
