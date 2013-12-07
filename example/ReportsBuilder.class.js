@@ -1,30 +1,52 @@
 function ReportsBuilder() {
     this._metadata= {
-        'main' : {
-            'date': {
-                'dimension': true
+        'main' : [
+            {
+                'name': 'date',
+                'key': 'date',
+                'dimension': true,
+                'type': 'date',
+                'format': 'y-m-d',
             },
-            'country': {
-                'dimension': true
+            {
+                'name': 'country',
+                'key': 'country',
+                'dimension': true,
+                'type': 'string',
             },
-            'visits': {
-                'dimension': false
+            {
+                'name': 'visits',
+                'key': 'visits',
+                'dimension': false,
+                'type': 'string',
             },
-            'signups': {
-                'dimension': false
+            {
+                'name': 'signups',
+                'key': 'signups',
+                'dimension': false,
+                'type': 'string',
             }
-        },
-        'by_country': {
-            'country': {
-                'dimension': true
+        ],
+        'by_country': [
+            {
+                'name': 'country',
+                'key': 'country',
+                'dimension': true,
+                'type': 'string',
             },
-            'visits': {
-                'dimension': false
+            {
+                'name': 'visits',
+                'key': 'visits',
+                'dimension': false,
+                'type': 'string',
             },
-            'signups': {
-                'dimension': false
+            {
+                'name': 'signups',
+                'key': 'signups',
+                'dimension': false,
+                'type': 'string',
             }
-        }
+        ]
     }
     this._data = {
         'main': [

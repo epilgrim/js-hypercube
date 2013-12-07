@@ -13,3 +13,8 @@ Report.prototype.getData = function() {
 Report.prototype.getMetadata = function() {
     return this._metadata;
 };
+Report.prototype.getDatatablesMetadata = function() {
+    return this.getMetadata().map(function(dimension){
+        return { 'sTitle': dimension.name};
+    })
+};
