@@ -77,8 +77,7 @@ ReportsBuilder.prototype.getReportsCollection = function (){
 
     var self = this;
     this.getReportKeys().forEach(function(key){
-        var report = new ps.Cube.deserialize(self._data[key], self._metadata[key]);
-        collection.addReport(key, report);
+        collection.addReport(key, new ps.Cube.deserialize(self._data[key]), new ReportMetadata(self._metadata[key]));
     });
     return collection;
 };

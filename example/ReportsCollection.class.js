@@ -1,16 +1,16 @@
-function ReportsCollection(reports) {
-    reports = reports || {};
-
+function ReportsCollection() {
     this._reports = {};
-    var self = this;
-
-    self._reports = reports;
-}
-ReportsCollection.prototype.addReport = function(key, report) {
-    return this._reports[key] = report;
+    this._metadata = {};
 };
-ReportsCollection.prototype.getReport = function(key) {
+ReportsCollection.prototype.addReport = function(key, report, metadata) {
+    this._reports[key] = report;
+    this._metadata[key] = metadata;
+};
+ReportsCollection.prototype.getData = function(key) {
     return this._reports[key];
+};
+ReportsCollection.prototype.getMetadata = function(key) {
+    return this._metadata[key];
 };
 ReportsCollection.prototype.getKeys = function() {
     return Object.keys(this._reports);

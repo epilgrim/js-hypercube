@@ -19,9 +19,9 @@
  * A simple implementation of an OLAP hypercube.
  * @see http://www.olapcouncil.org/research/glossaryly.htm
  *
- * @param {Array} metadata		Required
+ * @param {Array.<string>=} opt_measureNames		Optional. The measure names to expect.
  */
-ps.Cube = function(metadata) {
+ps.Cube = function(opt_measureNames) {
 	/**
 	 * A collection of indexes, keyed by index-name
 	 * @property {Object.<string, ps.FactIndex>}
@@ -48,25 +48,10 @@ ps.Cube = function(metadata) {
 	 * @property {Array.<string>}
 	 * @protected
 	 */
-	this._measureNames = [];
-
-    /**
-	 * Metadata of facts and measures
-	 * @property {Array.<string>}
-	 * @protected
-	 */
-	this._metadata = ps.isArray(metadata) ? metadata : [];
-
+	this._measureNames = ps.isArray(opt_measureNames) ? opt_measureNames : null;
 };
 
 /**
- * @return {array}		The metadata
- */
-ps.Cube.prototype.getMetadata = function() {
-	return this._metadata;
-};
-
-    /**
  * @return {!number}		The size of the cube
  */
 ps.Cube.prototype.count = function() {
@@ -179,7 +164,7 @@ ps.Cube.prototype._getPos = function(facts) {
  * @param {!Object<string, string>} facts
 */
 ps.Cube.prototype.slice = function(facts) {
-	var slice			= new ps.Cube(this._metadata),
+	var slice			= new ps.Cube(this._measureNames),
 	 	hits			= this._getPos(facts);
 
 	for (var i = 0, il = hits.length; i < il; ++i) {
@@ -196,7 +181,7 @@ ps.Cube.prototype.slice = function(facts) {
  * @param {number} toTime
  */
 ps.Cube.prototype.sliceDates = function(fromTime, toTime) {
-	var cube	= new ps.Cube(this._metadata),
+	var cube	= new ps.Cube(this._measureNames),
 		cells	= this._cells,
 		facts;
 
@@ -215,7 +200,7 @@ ps.Cube.prototype.sliceDates = function(fromTime, toTime) {
  * @param {!Object<string, string>} facts
  */
 ps.Cube.prototype.dice = function(facts) {
-	var dice			= new ps.Cube(this._metadata),
+	var dice			= new ps.Cube(this._measureNames),
 	 	hits			= this._getPos(facts);
 
 	// invert the hits
@@ -360,11 +345,11 @@ ps.Cube.prototype.serialize = function() {
 /**
  * Create a new cube using data from a simple array of objects
  * @param {Array} data
- * @param {Array} metadata		Optional.
+ * @param {Array.<string>=} opt_measureNames		Optional. The measure names to expect.
  * @return {!ps.Cube}
 */
-ps.Cube.deserialize = function(data, metadata) {
-	var cube = new ps.Cube(metadata),
+ps.Cube.deserialize = function(data, opt_measureNames) {
+	var cube = new ps.Cube(opt_measureNames),
 		cellData;
 
 	for (var i = 0, il = data.length; i < il; ++i) {

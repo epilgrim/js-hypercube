@@ -28,6 +28,7 @@
 
 	<!-- Requires jQuery, but you could easily replace jQuery if you create $.each, $.map, $.extend, $.isArray, $.isPlainObject, $.isFunction -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script src="plugins.js"></script>
 
 	<!-- Typically, you would use the minified version -->
@@ -42,6 +43,7 @@
     <!--Reports Classes-->
 	<script src="ReportsCollection.class.js"></script>
 	<script src="ReportsBuilder.class.js"></script>
+	<script src="ReportMetadata.class.js"></script>
 	<!--<script src="../src/ps.Cube.transforms.js"></script>-->
 	<!--<script src="../js-hypercube.min.js"></script>-->
     <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -56,7 +58,7 @@
         //backguards compatibility
         var reports = function(key) {
             key = key || 'main';
-            return reports_collection.getReport(key);
+            return reports_collection.getData(key);
         };
         
         function print(title, content){
@@ -67,6 +69,11 @@
         // run some interesting queries
         var key = 'main';
 		print('Total Visits', reports(key).getFactValues('date'));
+        print('keys', reports_collection.getMetadata('main').getKeys());
+        print('metadata date', reports_collection.getMetadata('main').get('date'));
+        print('date is dimension', reports_collection.getMetadata('main').isDimension('date'));
+        print('visits is dimension', reports_collection.getMetadata('main').isDimension('visits'));
+        print('lala is dimension', reports_collection.getMetadata('main').isDimension('lala'));
 	</script>
 
     <!--HIGHCHARTS INITIALIZATION-->
@@ -124,8 +131,8 @@
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
             $('#example').dataTable( {
-                "aaData": reports_collection.getReport(key).exportDataToTable(),
-                "aoColumns": reports_collection.getReport(key).exportHeadersToDataTables()
+                "aaData": reports_collection.getMetadata(key).toTable(reports_collection.getData(key)),
+                "aoColumns": reports_collection.getMetadata(key).headersForDataTables()
             } );
         } );
     </script>
